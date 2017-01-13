@@ -13,7 +13,7 @@ function TextDraw(){
   }
   
   function drawCanvas() {
-    console.log(canvas.map(x => x.join('')).join(" \n"));
+    return canvas.map(x => x.join('')).join(" \n");
   }
   
   function getPosition(x, y) {
@@ -112,12 +112,12 @@ function TextDraw(){
     characters: "",
     x_pos: 0,
     y_pos: 0,
-    draw: function(chars = "", x = 0, y = 0) {
+    draw: function(chars = "", x = 1, y = 1) {
       //DRAW characters in text, x_position, y position
       function init() {
         this.characters = chars;
-        this.x_pos = x;
-        this.y_pos = y;
+        this.x_pos = x - 1;
+        this.y_pos = y - 1;
       }
       
       function place() {
@@ -135,12 +135,12 @@ function TextDraw(){
     character: "@",
     x_pos: 0,
     y_pos: 0,
-    draw: function(char = "@", x = 0, y = 0) {
+    draw: function(char = "@", x = 1, y = 1) {
       //DRAW character, x_position, y_position
       function init() {
         this.character = char;
-        this.x_pos = x;
-        this.y_pos = y;
+        this.x_pos = x - 1;
+        this.y_pos = y - 1;
       }
       
       function place() {
