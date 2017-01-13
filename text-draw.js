@@ -4,7 +4,7 @@ function TextDraw(){
   let canvas = [];
   let width = 0;
   let height = 0;
-  
+  let color = "black"
   //Master functions
   function createCanvas(x,y) {
     width = x;
@@ -16,8 +16,16 @@ function TextDraw(){
     return canvas.map(x => x.join('')).join(" \n");
   }
   
-  function getPosition(x, y) {
-    return canvas[y - 1][x - 1];
+  function getContent(x, y) {
+    var div = document.createElement('div');
+    div.innerHTML = canvas[y - 1][x - 1];
+    return div.innerText;
+  }
+  
+  function logCanvas() {
+    //remove span tags from all characters.
+    let c = canvas.map((row,y) => row.map((char,x) => getContent(x + 1,y + 1)));
+    return c.map(x => x.join('')).join(" \n");
   }
   
   function validPosition(x = 1, y = 1, w = 1, h = 1) {
@@ -40,15 +48,23 @@ function TextDraw(){
        }
   }
   
+  function pack(chars,color = "black") {
+    //package characters for placing on canvas.
+    return "<span style='color:" + color + "'>" + chars + "</span>";
+  }
+  
   //Drawing types
   let line = {
     character: "@",
     char_count: 4, //length of line
+    color: "black", //color of line
     x_pos: 0,
     y_pos: 0,
-    draw: function(char = "@", l = 4, y = 1, x = 1, obj = {vertical: false}) {
+    draw: function(char = "@", l = 4, y = 1, x = 1, obj = {vertical: false, color: "black"}) {
       //DRAW - character, length, y_position, x_position
       function init() {
+        //defaults of specific object keys.
+        obj.vertical = obj.vertical || false;
         this.character = char;
         this.char_count = l;
         if(obj.vertical) {
@@ -58,6 +74,7 @@ function TextDraw(){
           //horizontal line validator
           validPosition(x,y,l)
         }
+        this.color = obj.color || "black";
         this.x_pos = x - 1; // row 2 will be row 2 instead of row 3.
         this.y_pos = y - 1;
       }
@@ -66,11 +83,13 @@ function TextDraw(){
       function place() {
         if(obj.vertical === false) {
           canvas[this.y_pos].splice(this.x_pos,this.char_count - 1);
-          canvas[this.y_pos][this.x_pos] = [...Array(this.char_count)].map(i => this.character);
-          canvas[this.y_pos] = canvas[this.y_pos].reduce((m,n) => [...m, ...n]);
+          canvas[this.y_pos][this.x_pos] = [...Array(this.char_count)].map(i => {
+            return pack(this.character, this.color)
+          });
+          canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos])
         } else {
           for(z = 0; z < this.char_count; z++) {
-            canvas[this.y_pos + z][this.x_pos] = this.character;
+            canvas[this.y_pos + z][this.x_pos] = pack(this.character,this.color)
           }
         }
       }
@@ -84,12 +103,14 @@ function TextDraw(){
     character: "@",
     square_width: 4,
     square_height: 4,
+    color: "black",
     x_pos: 0,
     y_pos: 0,
-    draw: function(char = "@", w = 4, h = 4, y = 1, x = 1) {
+    draw: function(char = "@", w = 4, h = 4, y = 1, x = 1, obj = {color: "black"}) {
       //DRAW - character, width, height, y_position, x_position
       function init() {
         this.character = char;
+        this.color = obj.color;
         this.square_width = w;
         this.square_height = h;
         validPosition(x,y,w,h);
@@ -98,8 +119,9 @@ function TextDraw(){
       }
       
       function place() {
+        console.log(this.character,this.square_height,this.square_width,this.color,this.x_pos,this.y_pos)
         for(z = 0; z < this.square_height; z++) {
-          line.draw(this.character,this.square_width,this.y_pos + z,this.x_pos);
+          line.draw(this.character,this.square_width,this.y_pos + z,this.x_pos,{color: this.color});
         }
       }
       
@@ -110,20 +132,25 @@ function TextDraw(){
   
   let text = {
     characters: "",
+    color: "black",
     x_pos: 0,
     y_pos: 0,
-    draw: function(chars = "", x = 1, y = 1) {
+    draw: function(chars = "", x = 1, y = 1, obj = {color: "black"}) {
       //DRAW characters in text, x_position, y position
       function init() {
         this.characters = chars;
+        this.color = obj.color || "black";
         this.x_pos = x - 1;
         this.y_pos = y - 1;
       }
       
       function place() {
         canvas[this.y_pos].splice(this.x_pos,this.characters.length - 1);
-        canvas[this.y_pos][this.x_pos] = this.characters.split('');
-        canvas[this.y_pos] = canvas[this.y_pos].reduce((m,n) => [...m,...n]);
+        canvas[this.y_pos][this.x_pos] = this.characters.split('').map(x => {
+          return pack(x, this.color)
+        });
+        console.log(canvas[this.y_pos][this.x_pos])
+        canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos]);
       }
       
       init.apply(this);
@@ -133,18 +160,20 @@ function TextDraw(){
   
   let point = {
     character: "@",
+    color: "black",
     x_pos: 0,
     y_pos: 0,
-    draw: function(char = "@", x = 1, y = 1) {
+    draw: function(char = "@", x = 1, y = 1, obj = {color: "black"}) {
       //DRAW character, x_position, y_position
       function init() {
         this.character = char;
+        this.color = obj.color || "black";
         this.x_pos = x - 1;
         this.y_pos = y - 1;
       }
       
       function place() {
-        canvas[this.y_pos][this.x_pos] = this.character;
+        canvas[this.y_pos][this.x_pos] = pack(this.character, this.color);
       }
       
       init.apply(this);
@@ -160,6 +189,7 @@ function TextDraw(){
     point,
     createCanvas,
     drawCanvas,
-    getPosition
+    getContent,
+    logCanvas
   }
 }
