@@ -16,6 +16,10 @@ function TextDraw(){
     console.log(canvas.map(x => x.join('')).join(" \n"));
   }
   
+  function getPosition(x, y) {
+    return canvas[y - 1][x - 1];
+  }
+  
   function validPosition(x = 1, y = 1, w = 1, h = 1) {
     w -=1; //Since a width or height of 1 will place exactly on x or y
     h -=1;
@@ -155,6 +159,7 @@ function TextDraw(){
     text,
     point,
     createCanvas,
-    drawCanvas
+    drawCanvas,
+    getPosition
   }
 }
