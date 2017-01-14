@@ -3,7 +3,7 @@ let TextDraw = {
     let canvas = [];
     let width = 0;
     let height = 0;
-    let color = "black"
+    let color = "black";
     //Master functions
     function createCanvas(x,y) {
       width = x;
@@ -74,10 +74,10 @@ let TextDraw = {
           
           if(obj.vertical) {
             //vertical line validator
-            validPosition(x,y,1,l)
+            validPosition(x,y,1,l);
           } else {
             //horizontal line validator
-            validPosition(x,y,l)
+            validPosition(x,y,l);
           }
           
           if(Array.isArray(this.character)) {
@@ -92,34 +92,38 @@ let TextDraw = {
         
         function place() {
           if(obj.vertical === false) {
-            canvas[this.y_pos].splice(this.x_pos,this.char_count - 1);
-            canvas[this.y_pos][this.x_pos] = [...Array(this.char_count)].map(i => {
+            var spliced_canvas = canvas[this.y_pos].splice(this.x_pos,this.char_count - 1);
+            canvas[this.y_pos][this.x_pos] = [...Array(this.char_count)].map((ch,i) => {
               let c = this.character;
               let p = this.color;
               //if character is an array, choose a char from the array.
               if(this.random_char) {
-                c = this.character[Math.floor(Math.random() * this.character.length)]
+                c = this.character[Math.floor(Math.random() * this.character.length)];
               }
               
               if(this.random_color) {
-                p = this.color[Math.floor(Math.random() * this.color.length)]
+                p = this.color[Math.floor(Math.random() * this.color.length)];
+              }
+              //special blank character, does not replace existing character on canvas.
+              if(c == "_BLANK_") {
+                return spliced_canvas[i] || canvas[this.y_pos][this.x_pos];
               }
               //return pack(character, color)
-              return pack(c, p)
+              return pack(c, p);
             });
-            canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos])
+            canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos]);
           } else {
             for(z = 0; z < this.char_count; z++) {
               let c = this.character;
               let p = this.color;
               if(this.random) {
-                c = this.character[Math.floor(Math.random() * this.character.length)]
+                c = this.character[Math.floor(Math.random() * this.character.length)];
               }
               
               if(this.random_color) {
-                p = this.color[Math.floor(Math.random() * this.color.length)]
+                p = this.color[Math.floor(Math.random() * this.color.length)];
               }
-              canvas[this.y_pos + z][this.x_pos] = pack(c,p)
+              canvas[this.y_pos + z][this.x_pos] = pack(c,p);
             }
           }
         }
@@ -207,7 +211,7 @@ let TextDraw = {
         init.apply(this);
         place.apply(this);
       }
-    }
+    };
     
     //Public API
     return {
@@ -219,6 +223,6 @@ let TextDraw = {
       drawCanvas,
       getContent,
       logCanvas
-    }
+    };
   }
-}
+};
