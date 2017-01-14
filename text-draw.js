@@ -57,6 +57,8 @@ let TextDraw = {
       character: "@",
       char_count: 4, //length of line
       color: "black", //color of line
+      random_char: false, //if there is an array of characters choose at random.
+      random_color: false,
       x_pos: 0,
       y_pos: 0,
       draw: function(char = "@", l = 4, y = 1, x = 1, obj = {vertical: false, color: "black"}) {
@@ -66,6 +68,10 @@ let TextDraw = {
           obj.vertical = obj.vertical || false;
           this.character = char;
           this.char_count = l;
+          this.color = obj.color || "black";
+          this.x_pos = x - 1; // row 2 will be row 2 instead of row 3.
+          this.y_pos = y - 1;
+          
           if(obj.vertical) {
             //vertical line validator
             validPosition(x,y,1,l)
@@ -73,9 +79,14 @@ let TextDraw = {
             //horizontal line validator
             validPosition(x,y,l)
           }
-          this.color = obj.color || "black";
-          this.x_pos = x - 1; // row 2 will be row 2 instead of row 3.
-          this.y_pos = y - 1;
+          
+          if(Array.isArray(this.character)) {
+            this.random_char = true;
+          }
+          
+          if(Array.isArray(this.color)) {
+            this.random_color = true;
+          }
         }
         
         
@@ -83,12 +94,32 @@ let TextDraw = {
           if(obj.vertical === false) {
             canvas[this.y_pos].splice(this.x_pos,this.char_count - 1);
             canvas[this.y_pos][this.x_pos] = [...Array(this.char_count)].map(i => {
-              return pack(this.character, this.color)
+              let c = this.character;
+              let p = this.color;
+              //if character is an array, choose a char from the array.
+              if(this.random_char) {
+                c = this.character[Math.floor(Math.random() * this.character.length)]
+              }
+              
+              if(this.random_color) {
+                p = this.color[Math.floor(Math.random() * this.color.length)]
+              }
+              //return pack(character, color)
+              return pack(c, p)
             });
             canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos])
           } else {
             for(z = 0; z < this.char_count; z++) {
-              canvas[this.y_pos + z][this.x_pos] = pack(this.character,this.color)
+              let c = this.character;
+              let p = this.color;
+              if(this.random) {
+                c = this.character[Math.floor(Math.random() * this.character.length)]
+              }
+              
+              if(this.random_color) {
+                p = this.color[Math.floor(Math.random() * this.color.length)]
+              }
+              canvas[this.y_pos + z][this.x_pos] = pack(c,p)
             }
           }
         }
@@ -109,7 +140,7 @@ let TextDraw = {
         //DRAW - character, width, height, y_position, x_position
         function init() {
           this.character = char;
-          this.color = obj.color;
+          this.color = obj.color || "black";
           this.square_width = w;
           this.square_height = h;
           validPosition(x,y,w,h);
