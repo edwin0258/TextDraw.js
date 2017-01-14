@@ -3,7 +3,6 @@ let TextDraw = {
     let canvas = [];
     let width = 0;
     let height = 0;
-    let color = "black";
     //Master functions
     function createCanvas(x,y) {
       width = x;
@@ -38,13 +37,14 @@ let TextDraw = {
     function getContent(x, y) {
       var div = document.createElement('div');
       div.innerHTML = canvas[y - 1][x - 1];
-      return div.innerText;
+      return {text: div.innerText, styling: /(style=")(.*)(")/g.exec(div.innerHTML)[2]};
     }
     
     function logCanvas() {
       //remove span tags from all characters.
       let c = canvas.map((row,y) => row.map((char,x) => getContent(x + 1,y + 1)));
-      console.log(c.map(x => x.join('')).join(" \n"));
+      let style_arr = [].concat.apply([],c.map(x => x.map(x => x.styling)))
+      console.log(c.map(x => x.map(x => "%c " + x.text).join('')).join(' \n'), ...style_arr);
     }
     
     function validPosition(x = 1, y = 1, w = 1, h = 1) {
@@ -86,9 +86,10 @@ let TextDraw = {
         function init() {
           //defaults of specific object keys.
           obj.vertical = obj.vertical || false;
+          obj.color = obj.color || "black";
           this.character = char;
           this.char_count = l;
-          this.color = obj.color || "black";
+          this.color = obj.color;
           this.x_pos = x - 1; // row 2 will be row 2 instead of row 3.
           this.y_pos = y - 1;
           
@@ -100,6 +101,8 @@ let TextDraw = {
             validPosition(x,y,l);
           }
           
+          this.random_char = false; //reset random before each line is made
+          this.random_color = false;
           if(Array.isArray(this.character)) {
             this.random_char = true;
           }
