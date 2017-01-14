@@ -40,11 +40,15 @@ let TextDraw = {
       return {text: div.innerText, styling: /(style=")(.*)(")/g.exec(div.innerHTML)[2]};
     }
     
-    function logCanvas() {
+    function logCanvas(obj = {display_color: true}) {
       //remove span tags from all characters.
       let c = canvas.map((row,y) => row.map((char,x) => getContent(x + 1,y + 1)));
-      let style_arr = [].concat.apply([],c.map(x => x.map(x => x.styling)))
-      console.log(c.map(x => x.map(x => "%c " + x.text).join('')).join(' \n'), ...style_arr);
+      if(obj.display_color === true) {
+        let style_arr = [].concat.apply([],c.map(x => x.map(x => x.styling)))
+        console.log(c.map(x => x.map(x => "%c " + x.text).join('')).join(' \n'), ...style_arr);
+      } else {
+        console.log(c.map(x => x.map(x => x.text).join('')).join(' \n'));
+      }
     }
     
     function validPosition(x = 1, y = 1, w = 1, h = 1) {
