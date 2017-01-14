@@ -8,17 +8,24 @@ let TextDraw = {
     function createCanvas(x,y) {
       width = x;
       height = y;
-      canvas = [...Array(height)].map(x => [...Array(width)].map(x => " "));
+      canvas = [...Array(height)].map(j => [...Array(width)].map(z => " "));
     }
     
     function expandCanvas(x,y) {
       var canvas_len = canvas.length;
       arr = canvas.map(m => {
-        return m.concat([...Array(x - m.length)].map(x => " "))
-      })
+        return m.concat([...Array(x - m.length)].map(z => " "));
+      });
       for(z = 0;z < y - canvas_len; z++){
         arr.push([...Array(x)].map(x => " ")); 
       }
+      width = x;
+      height = y;
+      canvas = arr;
+    }
+    
+    function shrinkCanvas(x,y) {
+      arr = canvas.slice(0,x).map(z => z.slice(0,y));
       width = x;
       height = y;
       canvas = arr;
@@ -144,7 +151,7 @@ let TextDraw = {
         init.apply(this);
         place.apply(this);
       }
-    }
+    };
     
     let square = {
       character: "@",
@@ -174,7 +181,7 @@ let TextDraw = {
         init.apply(this);
         place.apply(this);
       }
-    }
+    };
     
     let text = {
       characters: "",
@@ -193,7 +200,7 @@ let TextDraw = {
         function place() {
           canvas[this.y_pos].splice(this.x_pos,this.characters.length - 1);
           canvas[this.y_pos][this.x_pos] = this.characters.split('').map(x => {
-            return pack(x, this.color)
+            return pack(x, this.color);
           });
           canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos]);
         }
@@ -201,7 +208,7 @@ let TextDraw = {
         init.apply(this);
         place.apply(this);
       }
-    }
+    };
     
     let point = {
       character: "@",
@@ -234,6 +241,7 @@ let TextDraw = {
       point,
       createCanvas,
       expandCanvas,
+      shrinkCanvas,
       drawCanvas,
       getContent,
       logCanvas
