@@ -11,6 +11,19 @@ let TextDraw = {
       canvas = [...Array(height)].map(x => [...Array(width)].map(x => " "));
     }
     
+    function expandCanvas(x,y) {
+      var canvas_len = canvas.length;
+      arr = canvas.map(m => {
+        return m.concat([...Array(x - m.length)].map(x => " "))
+      })
+      for(z = 0;z < y - canvas_len; z++){
+        arr.push([...Array(x)].map(x => " ")); 
+      }
+      width = x;
+      height = y;
+      canvas = arr;
+    }
+    
     function drawCanvas() {
       return canvas.map(x => x.join('')).join(" \n");
     }
@@ -220,6 +233,7 @@ let TextDraw = {
       text,
       point,
       createCanvas,
+      expandCanvas,
       drawCanvas,
       getContent,
       logCanvas
