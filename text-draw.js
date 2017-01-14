@@ -24,7 +24,7 @@ let TextDraw = {
     function logCanvas() {
       //remove span tags from all characters.
       let c = canvas.map((row,y) => row.map((char,x) => getContent(x + 1,y + 1)));
-      return c.map(x => x.join('')).join(" \n");
+      console.log(c.map(x => x.join('')).join(" \n"));
     }
     
     function validPosition(x = 1, y = 1, w = 1, h = 1) {
@@ -118,7 +118,6 @@ let TextDraw = {
         }
         
         function place() {
-          console.log(this.character,this.square_height,this.square_width,this.color,this.x_pos,this.y_pos)
           for(z = 0; z < this.square_height; z++) {
             line.draw(this.character,this.square_width,this.y_pos + z,this.x_pos,{color: this.color});
           }
@@ -148,7 +147,6 @@ let TextDraw = {
           canvas[this.y_pos][this.x_pos] = this.characters.split('').map(x => {
             return pack(x, this.color)
           });
-          console.log(canvas[this.y_pos][this.x_pos])
           canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos]);
         }
         
