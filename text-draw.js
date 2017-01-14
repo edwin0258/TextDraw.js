@@ -7,16 +7,16 @@ let TextDraw = {
     function createCanvas(x,y) {
       width = x;
       height = y;
-      canvas = [...Array(height)].map(j => [...Array(width)].map(z => " "));
+      canvas = [...Array(height)].map(j => [...Array(width)].map(z => pack(" ","black")));
     }
     
     function expandCanvas(x,y) {
       var canvas_len = canvas.length;
       arr = canvas.map(m => {
-        return m.concat([...Array(x - m.length)].map(z => " "));
+        return m.concat([...Array(x - m.length)].map(z => pack(" ","black")));
       });
       for(z = 0;z < y - canvas_len; z++){
-        arr.push([...Array(x)].map(x => " ")); 
+        arr.push([...Array(x)].map(x => pack(" ","black"))); 
       }
       width = x;
       height = y;
