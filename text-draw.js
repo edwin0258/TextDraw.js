@@ -7,16 +7,16 @@ let TextDraw = {
     function createCanvas(x,y) {
       width = x;
       height = y;
-      canvas = [...Array(height)].map(j => [...Array(width)].map(z => pack(" ","black")));
+      canvas = [...Array(height)].map(j => [...Array(width)].map(z => pack(" ","color:black;")));
     }
     
     function expandCanvas(x,y) {
       var canvas_len = canvas.length;
       arr = canvas.map(m => {
-        return m.concat([...Array(x - m.length)].map(z => pack(" ","black")));
+        return m.concat([...Array(x - m.length)].map(z => pack(" ","color:black;")));
       });
       for(z = 0;z < y - canvas_len; z++){
-        arr.push([...Array(x)].map(x => pack(" ","black"))); 
+        arr.push([...Array(x)].map(x => pack(" ","color:black;"))); 
       }
       width = x;
       height = y;
@@ -45,7 +45,7 @@ let TextDraw = {
       let c = canvas.map((row,y) => row.map((char,x) => getContent(x + 1,y + 1)));
       if(obj.display_color === true) {
         let style_arr = [].concat.apply([],c.map(x => x.map(x => x.styling)))
-        console.log(c.map(x => x.map(x => "%c " + x.text).join('')).join(' \n'), ...style_arr);
+        console.log(c.map(x => x.map(x => "%c" + x.text).join('')).join(' \n'), ...style_arr);
       } else {
         console.log(c.map(x => x.map(x => x.text).join('')).join(' \n'));
       }
@@ -71,29 +71,28 @@ let TextDraw = {
          }
     }
     
-    function pack(chars,color = "black") {
+    function pack(chars,styling = "color:black;") {
       //package characters for placing on canvas.
-      return "<span style='color:" + color + "'>" + chars + "</span>";
+      return "<span style='" + styling + "'>" + chars + "</span>";
     }
     
     //Drawing types
     let line = {
       character: "@",
       char_count: 4, //length of line
-      color: "black", //color of line
+      styling: "color:black;", //styling of line
       random_char: false, //if there is an array of characters choose at random.
       random_color: false,
       x_pos: 0,
       y_pos: 0,
-      draw: function(char = "@", l = 4, y = 1, x = 1, obj = {vertical: false, color: "black"}) {
+      draw: function(char = "@", l = 4, y = 1, x = 1, obj = {vertical: false, styling: "color:black;"}) {
         //DRAW - character, length, y_position, x_position
         function init() {
           //defaults of specific object keys.
           obj.vertical = obj.vertical || false;
-          obj.color = obj.color || "black";
+          this.styling = obj.styling || "color:black;";
           this.character = char;
           this.char_count = l;
-          this.color = obj.color;
           this.x_pos = x - 1; // row 2 will be row 2 instead of row 3.
           this.y_pos = y - 1;
           
@@ -111,7 +110,7 @@ let TextDraw = {
             this.random_char = true;
           }
           
-          if(Array.isArray(this.color)) {
+          if(Array.isArray(this.styling)) {
             this.random_color = true;
           }
         }
@@ -122,33 +121,33 @@ let TextDraw = {
             var spliced_canvas = canvas[this.y_pos].splice(this.x_pos,this.char_count - 1);
             canvas[this.y_pos][this.x_pos] = [...Array(this.char_count)].map((ch,i) => {
               let c = this.character;
-              let p = this.color;
+              let p = this.styling;
               //if character is an array, choose a char from the array.
               if(this.random_char) {
                 c = this.character[Math.floor(Math.random() * this.character.length)];
               }
               
               if(this.random_color) {
-                p = this.color[Math.floor(Math.random() * this.color.length)];
+                p = this.styling[Math.floor(Math.random() * this.styling.length)];
               }
               //special blank character, does not replace existing character on canvas.
               if(c == "_BLANK_") {
                 return spliced_canvas[i] || canvas[this.y_pos][this.x_pos];
               }
-              //return pack(character, color)
+              //return pack(character, styling)
               return pack(c, p);
             });
             canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos]);
           } else {
             for(z = 0; z < this.char_count; z++) {
               let c = this.character;
-              let p = this.color;
+              let p = this.styling;
               if(this.random) {
                 c = this.character[Math.floor(Math.random() * this.character.length)];
               }
               
               if(this.random_color) {
-                p = this.color[Math.floor(Math.random() * this.color.length)];
+                p = this.styling[Math.floor(Math.random() * this.styling.length)];
               }
               canvas[this.y_pos + z][this.x_pos] = pack(c,p);
             }
@@ -164,14 +163,14 @@ let TextDraw = {
       character: "@",
       square_width: 4,
       square_height: 4,
-      color: "black",
+      styling: "color:black;",
       x_pos: 0,
       y_pos: 0,
-      draw: function(char = "@", w = 4, h = 4, y = 1, x = 1, obj = {color: "black"}) {
+      draw: function(char = "@", w = 4, h = 4, y = 1, x = 1, obj = {styling: "color:black;"}) {
         //DRAW - character, width, height, y_position, x_position
         function init() {
           this.character = char;
-          this.color = obj.color || "black";
+          this.styling = obj.styling || "color:black;";
           this.square_width = w;
           this.square_height = h;
           validPosition(x,y,w,h);
@@ -181,7 +180,7 @@ let TextDraw = {
         
         function place() {
           for(z = 0; z < this.square_height; z++) {
-            line.draw(this.character,this.square_width,this.y_pos + z,this.x_pos,{color: this.color});
+            line.draw(this.character,this.square_width,this.y_pos + z,this.x_pos,{styling: this.styling});
           }
         }
         
@@ -192,14 +191,14 @@ let TextDraw = {
     
     let text = {
       characters: "",
-      color: "black",
+      styling: "color:black;",
       x_pos: 0,
       y_pos: 0,
-      draw: function(chars = "", x = 1, y = 1, obj = {color: "black"}) {
+      draw: function(chars = "", x = 1, y = 1, obj = {styling: "color:black;"}) {
         //DRAW characters in text, x_position, y position
         function init() {
           this.characters = chars;
-          this.color = obj.color || "black";
+          this.styling = obj.styling || "color:black;";
           this.x_pos = x - 1;
           this.y_pos = y - 1;
         }
@@ -207,7 +206,7 @@ let TextDraw = {
         function place() {
           canvas[this.y_pos].splice(this.x_pos,this.characters.length - 1);
           canvas[this.y_pos][this.x_pos] = this.characters.split('').map(x => {
-            return pack(x, this.color);
+            return pack(x, this.styling);
           });
           canvas[this.y_pos] = [].concat.apply([],canvas[this.y_pos]);
         }
@@ -219,20 +218,20 @@ let TextDraw = {
     
     let point = {
       character: "@",
-      color: "black",
+      styling: "color:black;",
       x_pos: 0,
       y_pos: 0,
-      draw: function(char = "@", x = 1, y = 1, obj = {color: "black"}) {
+      draw: function(char = "@", x = 1, y = 1, obj = {styling: "color:black;"}) {
         //DRAW character, x_position, y_position
         function init() {
           this.character = char;
-          this.color = obj.color || "black";
+          this.styling = obj.styling || "color:black;";
           this.x_pos = x - 1;
           this.y_pos = y - 1;
         }
         
         function place() {
-          canvas[this.y_pos][this.x_pos] = pack(this.character, this.color);
+          canvas[this.y_pos][this.x_pos] = pack(this.character, this.styling);
         }
         
         init.apply(this);
