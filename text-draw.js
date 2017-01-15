@@ -85,7 +85,7 @@ let TextDraw = {
       random_color: false,
       x_pos: 0,
       y_pos: 0,
-      draw: function(char = "@", l = 4, y = 1, x = 1, obj = {vertical: false, styling: "color:black;"}) {
+      draw: function(char = "@", l = 4, x = 1, y = 1, obj = {vertical: false, styling: "color:black;"}) {
         //DRAW - character, length, y_position, x_position
         function init() {
           //defaults of specific object keys.
@@ -166,7 +166,7 @@ let TextDraw = {
       styling: "color:black;",
       x_pos: 0,
       y_pos: 0,
-      draw: function(char = "@", w = 4, h = 4, y = 1, x = 1, obj = {styling: "color:black;"}) {
+      draw: function(char = "@", w = 4, h = 4, x = 1, y = 1, obj = {styling: "color:black;"}) {
         //DRAW - character, width, height, y_position, x_position
         function init() {
           this.character = char;
@@ -180,7 +180,7 @@ let TextDraw = {
         
         function place() {
           for(z = 0; z < this.square_height; z++) {
-            line.draw(this.character,this.square_width,this.y_pos + z,this.x_pos,{styling: this.styling});
+            line.draw(this.character,this.square_width,this.x_pos,this.y_pos + z,{styling: this.styling});
           }
         }
         
@@ -239,6 +239,8 @@ let TextDraw = {
       }
     };
     
+    
+    
     //Public API
     return {
       line,
@@ -252,5 +254,33 @@ let TextDraw = {
       getContent,
       logCanvas
     };
-  }
+  },
+  
+  macro: {
+      init: function(obj = {functions: []}) {
+        let functions = obj.functions || [];
+        let canvas = "";
+        function make(o = {canvas: ""}) {
+          canvas = o.canvas || "";
+          functions.map(cmd => {
+            if(cmd.type == "line") {
+              canvas.line.draw(cmd.c, cmd.l,cmd.y,cmd.x,cmd.extras);
+            } else if (cmd.type == "square") {
+              canvas.square.draw(cmd.c, cmd.w, cmd.h, cmd.y, cmd.x, cmd.extras)
+            } else if (cmd.type == "text" || cmd.type == "point") {
+              canvas.text.draw(cmd.text || cmd.c, cmd.x, cmd.y, cmd.extras)
+            }
+          })
+        }
+        
+        function getinfo() {
+          console.log("functions: " + functions, "canvas: " + JSON.stringify(canvas))
+        }
+        
+        return {
+          make,
+          getinfo
+        }
+      }
+    }
 };
