@@ -3,7 +3,7 @@
 Contents
 1. [Setting up a canvas](#setup)
 2. [Drawing a line](#line)
-  1.  [Drawing a vertical line](#vertical)
+  i.  [Drawing a vertical line](#vertical)
 3. [Drawing text](#text)
 4. [Drawing a point](#point)
 5. [Add css styling](#styling)
