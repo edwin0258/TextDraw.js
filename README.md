@@ -1,3 +1,5 @@
+![travis ci build](https://travis-ci.org/edwin0258/TextDraw.js.svg?branch=master)
+
 # TextDraw.js
 
 ### Importing/Installing
