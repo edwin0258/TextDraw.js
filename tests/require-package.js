@@ -1,1 +1,1 @@
-require("text-draw");
+require("../build/text-draw.js");
