@@ -71,7 +71,7 @@ You can also display the canvas on a web page by using `drawCanvas`.
 
 ```javascript
 var container = document.getElementById("demo");
-demo.innerHTML = myCanvas.drawCanvas();
+container.innerHTML = myCanvas.drawCanvas();
 ```
 
 Make sure to wrap any element that you plan to insert a canvas into with `pre` tags.
