@@ -4,7 +4,7 @@
   "description": "A drawing tool for creating graphics with text in web pages and consoles.",
   "main": "./build/text-draw.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/require-package.js"
   },
   "repository": {
     "type": "git",
@@ -23,8 +23,5 @@
   "bugs": {
     "url": "https://github.com/edwin0258/TextDraw.js/issues"
   },
-  "scripts": {
-    "test": "node tests/require-package.js"
-  }
   "homepage": "https://github.com/edwin0258/TextDraw.js#readme"
 }
