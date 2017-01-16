@@ -4,12 +4,7 @@
 
 ### Importing/Installing
 
-If you are using npm.
-
-```bash
-npm install text-draw
-```
-You can then require text-draw in the file of your choice.
+Require text-draw after you have installed it.
 ```javascript
 var TextDraw = require('text-draw');
 ```

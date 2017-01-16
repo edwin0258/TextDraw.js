@@ -1,4 +1,4 @@
- "use strict";
+"use strict";
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -44,6 +44,21 @@ var TextDraw = {
       canvas = arr;
     }
 
+    function clearCanvas() {
+      canvas = canvas.map(function (x) {
+        return x.map(function (x) {
+          return pack(" ", "color:black;");
+        });
+      });
+    }
+
+    function fillCanvas() {
+      var char = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "@";
+      var obj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { styling: "color:black;" };
+
+      square.draw(char, width, height, 1, 1, { styling: obj.styling });
+    }
+
     function drawCanvas() {
       return canvas.map(function (x) {
         return x.join('');
@@ -64,6 +79,14 @@ var TextDraw = {
           return getContent(x + 1, y + 1);
         });
       });
+      //percentage characters cause a bug in styling.
+      if (c.map(function (x) {
+        return x.map(function (x) {
+          return x.text;
+        }).join('');
+      }).join('').match("%")) {
+        console.warn("If you are using percentage symbols in your canvas you may want to switch display_color to false.");
+      }
       if (obj.display_color === true) {
         var _console;
 
@@ -310,6 +333,8 @@ var TextDraw = {
       createCanvas: createCanvas,
       expandCanvas: expandCanvas,
       shrinkCanvas: shrinkCanvas,
+      clearCanvas: clearCanvas,
+      fillCanvas: fillCanvas,
       drawCanvas: drawCanvas,
       getContent: getContent,
       logCanvas: logCanvas
@@ -328,21 +353,32 @@ var TextDraw = {
         canvas = o.canvas || "";
         functions.map(function (cmd) {
           if (cmd.type == "line") {
-            canvas.line.draw(cmd.c, cmd.l, cmd.y, cmd.x, cmd.extras);
+            canvas.line.draw(cmd.c, cmd.l, cmd.x, cmd.y, cmd.extras);
           } else if (cmd.type == "square") {
-            canvas.square.draw(cmd.c, cmd.w, cmd.h, cmd.y, cmd.x, cmd.extras);
+            canvas.square.draw(cmd.c, cmd.w, cmd.h, cmd.x, cmd.y, cmd.extras);
           } else if (cmd.type == "text" || cmd.type == "point") {
             canvas.text.draw(cmd.text || cmd.c, cmd.x, cmd.y, cmd.extras);
+          } else if (cmd.type == "macro") {
+            cmd.name.make({ canvas: canvas });
+          } else {
+            throw Error("Invalid macro type: " + cmd.type);
           }
         });
       }
 
+      function setFunctions() {
+        var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { functions: functions };
+
+        functions = obj.functions || [];
+      }
+      //set functions soon.
       function getinfo() {
         console.log("functions: " + functions, "canvas: " + JSON.stringify(canvas));
       }
 
       return {
         make: make,
+        setFunctions: setFunctions,
         getinfo: getinfo
       };
     }
