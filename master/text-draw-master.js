@@ -42,6 +42,10 @@ let TextDraw = {
     function logCanvas(obj = {display_color: true}) {
       //remove span tags from all characters.
       let c = canvas.map((row,y) => row.map((char,x) => getContent(x + 1,y + 1)));
+      //percentage characters cause a bug in styling.
+      if(c.map(x => x.map(x => x.text).join('')).join('').match("%")){
+        console.warn("If you are using percentage symbols in your canvas you may want to switch display_color to false.");
+      }
       if(obj.display_color === true) {
         let style_arr = [].concat.apply([],c.map(x => x.map(x => x.styling)));
         console.log(c.map(x => x.map(x => "%c" + x.text).join('')).join(' \n'), ...style_arr);
@@ -263,21 +267,30 @@ let TextDraw = {
           canvas = o.canvas || "";
           functions.map(cmd => {
             if(cmd.type == "line") {
-              canvas.line.draw(cmd.c, cmd.l,cmd.y,cmd.x,cmd.extras);
+              canvas.line.draw(cmd.c, cmd.l, cmd.x, cmd.y, cmd.extras);
             } else if (cmd.type == "square") {
-              canvas.square.draw(cmd.c, cmd.w, cmd.h, cmd.y, cmd.x, cmd.extras);
+              canvas.square.draw(cmd.c, cmd.w, cmd.h, cmd.x, cmd.y, cmd.extras);
             } else if (cmd.type == "text" || cmd.type == "point") {
               canvas.text.draw(cmd.text || cmd.c, cmd.x, cmd.y, cmd.extras);
+            } else if (cmd.type == "macro") {
+              cmd.name.make({canvas});
+            } else {
+              throw Error("Invalid macro type: " + cmd.type);
             }
-          });
+          })
         }
         
+        function setFunctions(obj = {functions}) {
+          functions = obj.functions || [];
+        }
+        //set functions soon.
         function getinfo() {
           console.log("functions: " + functions, "canvas: " + JSON.stringify(canvas));
         }
         
         return {
           make,
+          setFunctions,
           getinfo
         };
       }
