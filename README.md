@@ -22,6 +22,8 @@ Or, if you would like to use the minified TextDraw.
 var TextDraw = require('[PATH]/text-draw.min.js');
 ```
 
+###### *Note: something like browserify is required to use text-draw on web pages.*
+
 ### Initializing
 
 Once you have imported TextDraw..
