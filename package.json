@@ -1,6 +1,6 @@
 {
   "name": "text-draw",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A drawing tool for creating graphics with text in web pages and consoles.",
   "main": "./build/text-draw.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "dom"
   ],
   "author": "Devin Miller",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/edwin0258/TextDraw.js/issues"
   },

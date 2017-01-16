@@ -1,27 +1,36 @@
 # TextDraw.js
 
-### Importing
+### Importing/Installing
 
-Download text-draw.js and place it in a folder where you can access it.
+If you are using npm.
+
+```bash
+npm install text-draw
+```
+You can then require text-draw in the file of your choice.
 ```javascript
-var TextDraw = require("[PATH]/text-draw.js");
+var TextDraw = require('text-draw');
+```
+You can also download text-draw.js (found in build folder on github page) and place it where you can access it.
+```javascript
+var TextDraw = require('[PATH]/text-draw.js');
 ```
 Or, if you would like to use the minified TextDraw.
 ```javascript
-var TextDraw = require("[PATH]/text-draw.min.js");
+var TextDraw = require('[PATH]/text-draw.min.js');
 ```
 
 ### Initializing
 
-Once you have imported TextDraw you can start to use it!
+Once you have imported TextDraw..
 
-First create a TextDraw object and initialize it.
+First, create a TextDraw object and initialize it.
 
 ```javascript
 var myCanvas = TextDraw.init();
 ```
 
-Create a canvas of size`(x, y)` for your text 
+Create a canvas of size`(x, y)` for your text.
 
 ```javascript
 myCanvas.createCanvas(21,9);
