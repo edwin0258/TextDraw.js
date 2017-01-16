@@ -30,6 +30,14 @@ let TextDraw = {
       canvas = arr;
     }
     
+    function clearCanvas() {
+      canvas = canvas.map(x => x.map(x => pack(" ","color:black;")));
+    }
+    
+    function fillCanvas(char = "@",obj = {styling: "color:black;"}) {
+      square.draw(char,width,height,1,1,{styling: obj.styling});
+    }
+    
     function drawCanvas() {
       return canvas.map(x => x.join('')).join(" \n");
     }
@@ -253,6 +261,8 @@ let TextDraw = {
       createCanvas,
       expandCanvas,
       shrinkCanvas,
+      clearCanvas,
+      fillCanvas,
       drawCanvas,
       getContent,
       logCanvas
@@ -260,41 +270,41 @@ let TextDraw = {
   },
   
   macro: {
-      init: function(obj = {functions: []}) {
-        let functions = obj.functions || [];
-        let canvas = "";
-        function make(o = {canvas: ""}) {
-          canvas = o.canvas || "";
-          functions.map(cmd => {
-            if(cmd.type == "line") {
-              canvas.line.draw(cmd.c, cmd.l, cmd.x, cmd.y, cmd.extras);
-            } else if (cmd.type == "square") {
-              canvas.square.draw(cmd.c, cmd.w, cmd.h, cmd.x, cmd.y, cmd.extras);
-            } else if (cmd.type == "text" || cmd.type == "point") {
-              canvas.text.draw(cmd.text || cmd.c, cmd.x, cmd.y, cmd.extras);
-            } else if (cmd.type == "macro") {
-              cmd.name.make({canvas});
-            } else {
-              throw Error("Invalid macro type: " + cmd.type);
-            }
-          })
-        }
-        
-        function setFunctions(obj = {functions}) {
-          functions = obj.functions || [];
-        }
-        //set functions soon.
-        function getinfo() {
-          console.log("functions: " + functions, "canvas: " + JSON.stringify(canvas));
-        }
-        
-        return {
-          make,
-          setFunctions,
-          getinfo
-        };
+    init: function(obj = {functions: []}) {
+      let functions = obj.functions || [];
+      let canvas = "";
+      function make(o = {canvas: ""}) {
+        canvas = o.canvas || "";
+        functions.map(cmd => {
+          if(cmd.type == "line") {
+            canvas.line.draw(cmd.c, cmd.l, cmd.x, cmd.y, cmd.extras);
+          } else if (cmd.type == "square") {
+            canvas.square.draw(cmd.c, cmd.w, cmd.h, cmd.x, cmd.y, cmd.extras);
+          } else if (cmd.type == "text" || cmd.type == "point") {
+            canvas.text.draw(cmd.text || cmd.c, cmd.x, cmd.y, cmd.extras);
+          } else if (cmd.type == "macro") {
+            cmd.name.make({canvas});
+          } else {
+            throw Error("Invalid macro type: " + cmd.type);
+          }
+        })
       }
+      
+      function setFunctions(obj = {functions}) {
+        functions = obj.functions || [];
+      }
+      //set functions soon.
+      function getinfo() {
+        console.log("functions: " + functions, "canvas: " + JSON.stringify(canvas));
+      }
+      
+      return {
+        make,
+        setFunctions,
+        getinfo
+      };
     }
+  }
 };
 
 module.exports = TextDraw;
