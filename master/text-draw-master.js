@@ -47,6 +47,12 @@ let TextDraw = {
       return { text: /(style=')(.*)('>)(.*)(<\/span>)/g.exec(div)[4], styling: /(style=')(.*)(')/g.exec(div)[2]};
     }
     
+    function getAllContent() {
+      return canvas.map((row,y) => row.map((col,x) => {
+        return getContent(x + 1, y + 1)
+      }));
+    }
+    
     function logCanvas(obj = {display_color: true}) {
       //remove span tags from all characters.
       let c = canvas.map((row,y) => row.map((char,x) => getContent(x + 1,y + 1)));
@@ -265,6 +271,7 @@ let TextDraw = {
       fillCanvas,
       drawCanvas,
       getContent,
+      getAllContent,
       logCanvas
     };
   },
@@ -288,7 +295,6 @@ let TextDraw = {
       }
       function make(o = {canvas: ""},changes) {
         canvas = o.canvas || "";
-        console.log(changes)
         if(changes){
           //Make changes before drawing macro.
           if(Array.isArray(changes)){

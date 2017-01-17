@@ -70,6 +70,14 @@ var TextDraw = {
       return { text: /(style=')(.*)('>)(.*)(<\/span>)/g.exec(div)[4], styling: /(style=')(.*)(')/g.exec(div)[2] };
     }
 
+    function getAllContent() {
+      return canvas.map(function (row, y) {
+        return row.map(function (col, x) {
+          return getContent(x + 1, y + 1);
+        });
+      });
+    }
+
     function logCanvas() {
       var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { display_color: true };
 
@@ -337,6 +345,7 @@ var TextDraw = {
       fillCanvas: fillCanvas,
       drawCanvas: drawCanvas,
       getContent: getContent,
+      getAllContent: getAllContent,
       logCanvas: logCanvas
     };
   },
@@ -365,7 +374,6 @@ var TextDraw = {
         var changes = arguments[1];
 
         canvas = o.canvas || "";
-        console.log(changes);
         if (changes) {
           //Make changes before drawing macro.
           if (Array.isArray(changes)) {
