@@ -343,15 +343,40 @@ var TextDraw = {
 
   macro: {
     init: function init() {
-      var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { functions: [] };
+      var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { actions: [], names: [] };
 
-      var functions = obj.functions || [];
+      var actions = obj.actions || [];
+      var names = obj.names || [];
       var canvas = "";
+      function makeChanges(changes) {
+        for (var action in changes) {
+          var change = changes[action];
+          if (names[action] != undefined) {
+            action = names[action];
+          }
+          for (var attribute in change) {
+            var value = change[attribute];
+            setAttribute(action, attribute, value);
+          }
+        }
+      }
       function make() {
         var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { canvas: "" };
+        var changes = arguments[1];
 
         canvas = o.canvas || "";
-        functions.map(function (cmd) {
+        console.log(changes);
+        if (changes) {
+          //Make changes before drawing macro.
+          if (Array.isArray(changes)) {
+            changes.map(function (changes) {
+              makeChanges(changes);
+            });
+          } else {
+            makeChanges(changes);
+          }
+        }
+        actions.map(function (cmd) {
           if (cmd.type == "line") {
             canvas.line.draw(cmd.c, cmd.l, cmd.x, cmd.y, cmd.extras);
           } else if (cmd.type == "square") {
@@ -359,30 +384,40 @@ var TextDraw = {
           } else if (cmd.type == "text" || cmd.type == "point") {
             canvas.text.draw(cmd.text || cmd.c, cmd.x, cmd.y, cmd.extras);
           } else if (cmd.type == "macro") {
-            cmd.name.make({ canvas: canvas });
+            cmd.name.make({ canvas: canvas }, cmd.macro_changes);
+          } else if (cmd.type == "set_macro") {
+            cmd.name.setAttributes(cmd.action, cmd.changes);
           } else {
             throw Error("Invalid macro type: " + cmd.type);
           }
         });
       }
 
-      function setFunctions() {
-        var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { functions: functions };
+      function setActions() {
+        var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { actions: actions, names: names };
 
-        functions = obj.functions || [];
+        actions = obj.actions || [];
+        names = obj.names || [];
       }
-      //set functions soon.
-      function getinfo() {
-        console.log("functions: " + functions, "canvas: " + JSON.stringify(canvas));
+
+      function setAttribute() {
+        var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var attribute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+        var change = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+
+        actions[action][attribute] = change;
+      }
+
+      function getInfo() {
+        console.log("actions: " + JSON.stringify(actions), "canvas: " + JSON.stringify(canvas));
       }
 
       return {
         make: make,
-        setFunctions: setFunctions,
-        getinfo: getinfo
+        setActions: setActions,
+        setAttribute: setAttribute,
+        getInfo: getInfo
       };
     }
   }
 };
-
-module.exports = TextDraw;

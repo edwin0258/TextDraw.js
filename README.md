@@ -97,4 +97,4 @@ You should see something similar to:
 
 ### Further reading
 
-Please refer to the docs folder.
+[https://github.com/edwin0258/TextDraw.js/tree/master/docs](https://github.com/edwin0258/TextDraw.js/tree/master/docs)

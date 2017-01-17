@@ -275,12 +275,12 @@ let TextDraw = {
       let names = obj.names || [];
       let canvas = "";
       function makeChanges(changes) {
-        for(action in changes) {
+        for(var action in changes) {
           let change = changes[action];
           if(names[action] != undefined) {
             action = names[action];
           }
-          for(attribute in change) {
+          for(var attribute in change) {
             let value = change[attribute];
             setAttribute(action,attribute,value);
           }
