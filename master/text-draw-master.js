@@ -338,3 +338,5 @@ let TextDraw = {
     }
   }
 };
+
+module.exports = TextDraw;

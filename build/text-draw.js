@@ -421,3 +421,5 @@ var TextDraw = {
     }
   }
 };
+
+module.exports = TextDraw;
