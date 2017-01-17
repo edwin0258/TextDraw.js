@@ -270,12 +270,36 @@ let TextDraw = {
   },
   
   macro: {
-    init: function(obj = {functions: []}) {
-      let functions = obj.functions || [];
+    init: function(obj = {actions: [], names: []}) {
+      let actions = obj.actions || [];
+      let names = obj.names || [];
       let canvas = "";
-      function make(o = {canvas: ""}) {
+      function makeChanges(changes) {
+        for(action in changes) {
+          let change = changes[action];
+          if(names[action] != undefined) {
+            action = names[action];
+          }
+          for(attribute in change) {
+            let value = change[attribute];
+            setAttribute(action,attribute,value);
+          }
+        }
+      }
+      function make(o = {canvas: ""},changes) {
         canvas = o.canvas || "";
-        functions.map(cmd => {
+        console.log(changes)
+        if(changes){
+          //Make changes before drawing macro.
+          if(Array.isArray(changes)){
+            changes.map(changes => {
+              makeChanges(changes)
+            })
+          } else {
+            makeChanges(changes)
+          }
+        }
+        actions.map(cmd => {
           if(cmd.type == "line") {
             canvas.line.draw(cmd.c, cmd.l, cmd.x, cmd.y, cmd.extras);
           } else if (cmd.type == "square") {
@@ -283,28 +307,34 @@ let TextDraw = {
           } else if (cmd.type == "text" || cmd.type == "point") {
             canvas.text.draw(cmd.text || cmd.c, cmd.x, cmd.y, cmd.extras);
           } else if (cmd.type == "macro") {
-            cmd.name.make({canvas});
+            cmd.name.make({canvas},cmd.macro_changes);
+          } else if (cmd.type == "set_macro") {
+            cmd.name.setAttributes(cmd.action, cmd.changes)
           } else {
             throw Error("Invalid macro type: " + cmd.type);
           }
         })
       }
       
-      function setFunctions(obj = {functions}) {
-        functions = obj.functions || [];
+      function setActions(obj = {actions, names}) {
+        actions = obj.actions || [];
+        names = obj.names || [];
       }
-      //set functions soon.
-      function getinfo() {
-        console.log("functions: " + functions, "canvas: " + JSON.stringify(canvas));
+      
+      function setAttribute(action = 0, attribute = "", change = "") {
+          actions[action][attribute] = change;
+      }
+      
+      function getInfo() {
+        console.log("actions: " + JSON.stringify(actions), "canvas: " + JSON.stringify(canvas));
       }
       
       return {
         make,
-        setFunctions,
-        getinfo
+        setActions,
+        setAttribute,
+        getInfo
       };
     }
   }
 };
-
-module.exports = TextDraw;
